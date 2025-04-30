@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "HEBCIS_Test_"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "7cf2eec3-79fa-49d6-825d-01e485e26815"
+  }
+}

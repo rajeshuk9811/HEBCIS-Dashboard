@@ -1,0 +1,105 @@
+table Description
+	lineageTag: edbcbe30-4537-4731-a89c-8b41ff7cfb8a
+
+	measure Selected_Description = ```
+			
+			VAR SelectedCategories = VALUES('HEBCI_components'[Category Name])
+			VAR CategoryCount = COUNTROWS(SelectedCategories)
+			
+			VAR SelectedDescription = 
+			    SWITCH(
+			        TRUE(),
+			        CategoryCount = 1, 
+			            LOOKUPVALUE(
+			                'Description'[Description], 
+			                'Description'[Title], 
+			                SELECTEDVALUE('HEBCI_components'[Category Name])
+			            ),
+			        CategoryCount = 2, 
+			            CONCATENATEX(
+			                SelectedCategories, 
+			                LOOKUPVALUE(
+			                    'Description'[Description], 
+			                    'Description'[Title], 
+			                    'HEBCI_components'[Category Name]
+			                ), 
+			               UNICHAR(10) & "_______________________________________________________________________________________________________" & UNICHAR(10)  -- Adds separator line
+			            ),
+			        CategoryCount > 2, 
+			            "Multiple Categories Selected",
+			        "All Categories"
+			    )
+			RETURN
+			    IF(SelectedDescription = BLANK(), "No Description Available", SelectedDescription)
+			
+			```
+		lineageTag: 3eace557-e623-44cd-8fda-8238bb70df57
+
+	measure Sub-Title = ```
+			
+			VAR SelectedCategories = VALUES('HEBCI_components'[Category Name])
+			VAR CategoryCount = COUNTROWS(SelectedCategories)
+			
+			VAR Subtitle = 
+			    SWITCH(
+			        TRUE(),
+			        CategoryCount = 1, 
+			            LOOKUPVALUE('Description'[Sub_Title], 'Description'[Title], SELECTEDVALUE('HEBCI_components'[Category Name])),
+			        CategoryCount = 2, 
+			            CONCATENATEX(
+			                SelectedCategories, 
+			                LOOKUPVALUE('Description'[Sub_Title], 'Description'[Title], 'HEBCI_components'[Category Name]), 
+			                ", "
+			            ),
+			        CategoryCount > 2, 
+			            "Multiple Categories Selected",
+			        "All Categories"
+			    )
+			RETURN
+			    Subtitle
+			
+			
+			```
+		lineageTag: 7ea530f1-c13a-4a12-add5-d07dec0d8f0b
+
+	column Title
+		dataType: string
+		lineageTag: 09729cc5-a19d-403b-bd6f-bb97b1536f44
+		summarizeBy: none
+		sourceColumn: Title
+
+		annotation SummarizationSetBy = Automatic
+
+	column Sub_Title
+		dataType: string
+		lineageTag: 947a51dc-c89b-4382-876e-0fc70063fa5f
+		summarizeBy: none
+		sourceColumn: Sub_Title
+
+		annotation SummarizationSetBy = Automatic
+
+	column Description
+		dataType: string
+		lineageTag: 928b0623-7500-4f92-b913-408423c9d2ac
+		summarizeBy: none
+		sourceColumn: Description
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Description = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(Web.Contents("https://myntuac.sharepoint.com/sites/KEBusinessIntelligence/Shared%20Documents/HEBCIS/HEBCI_Descriptions.xlsx"), null, true),
+				    Sheet2_Sheet = Source{[Item="Sheet2",Kind="Sheet"]}[Data],
+				    #"Changed Type" = Table.TransformColumnTypes(Sheet2_Sheet,{{"Column1", type text}, {"Column2", type text}, {"Column3", type text}}),
+				    #"Promoted Headers" = Table.PromoteHeaders(#"Changed Type", [PromoteAllScalars=true]),
+				    #"Changed Type1" = Table.TransformColumnTypes(#"Promoted Headers",{{"Title", type text}, {"Sub Title", type text}, {"Description", type text}}),
+				    #"Renamed Columns" = Table.RenameColumns(#"Changed Type1",{{"Sub Title", "Sub_Title"}})
+				in
+				    #"Renamed Columns"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

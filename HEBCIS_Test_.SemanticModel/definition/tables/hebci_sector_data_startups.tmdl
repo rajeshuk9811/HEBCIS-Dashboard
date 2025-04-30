@@ -1,0 +1,139 @@
+table hebci_sector_data_startups
+	lineageTag: bb2c8453-cf24-4e5e-9005-a641aa64b9f5
+
+	column Column1
+		dataType: int64
+		formatString: 0
+		lineageTag: bd33ae7c-f59d-4c63-90b9-cc6e35df39ad
+		summarizeBy: sum
+		sourceColumn: Column1
+
+		annotation SummarizationSetBy = Automatic
+
+	column ukprn
+		dataType: int64
+		formatString: 0
+		lineageTag: 7b868190-2417-48ca-935f-4e6ef92eb157
+		summarizeBy: none
+		sourceColumn: ukprn
+
+		annotation SummarizationSetBy = Automatic
+
+	column hei
+		dataType: string
+		lineageTag: 8593c23a-3c61-40de-8420-bd4cabb1f2a9
+		summarizeBy: none
+		sourceColumn: hei
+
+		annotation SummarizationSetBy = Automatic
+
+	column country
+		dataType: string
+		lineageTag: e66603b8-56da-426c-bbbf-b5aa5a4df51c
+		summarizeBy: none
+		sourceColumn: country
+
+		annotation SummarizationSetBy = Automatic
+
+	column region
+		dataType: string
+		lineageTag: 40039d23-fdc9-43f8-90fe-a7795275163d
+		summarizeBy: none
+		sourceColumn: region
+
+		annotation SummarizationSetBy = Automatic
+
+	column activity
+		dataType: string
+		lineageTag: 55e0b53b-d772-4a95-9164-f8906810fe3b
+		summarizeBy: none
+		sourceColumn: activity
+
+		annotation SummarizationSetBy = Automatic
+
+	column type_metric
+		dataType: string
+		lineageTag: c611c217-d8fc-4a3f-bdcb-46353dc27737
+		summarizeBy: none
+		sourceColumn: type_metric
+
+		annotation SummarizationSetBy = Automatic
+
+	column unit
+		dataType: string
+		lineageTag: ddcd8ac6-4859-40fe-b1ed-4faa308a4960
+		summarizeBy: none
+		sourceColumn: unit
+
+		annotation SummarizationSetBy = Automatic
+
+	column actual
+		dataType: int64
+		formatString: 0
+		lineageTag: 0a29ee6c-286b-40ca-9c00-e8ad9bab7f55
+		summarizeBy: sum
+		sourceColumn: actual
+
+		annotation SummarizationSetBy = Automatic
+
+	column beneficiary
+		dataType: string
+		lineageTag: ec2ae0a9-27cc-4e5f-a35e-71420b2765d9
+		summarizeBy: none
+		sourceColumn: beneficiary
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'academic_year.1'
+		dataType: int64
+		formatString: 0
+		lineageTag: 0a249b35-4bce-4c7d-a22d-b943486110f9
+		summarizeBy: sum
+		sourceColumn: academic_year.1
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'academic_year.2'
+		dataType: int64
+		formatString: 0
+		lineageTag: eb5547d2-2cce-4654-9e47-5f9019ca7867
+		summarizeBy: sum
+		sourceColumn: academic_year.2
+
+		annotation SummarizationSetBy = Automatic
+
+	column Date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 12ecd703-8cfe-4641-bc11-181458ffc5bd
+		summarizeBy: none
+		sourceColumn: Date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column category_marker
+		dataType: string
+		lineageTag: 8598c9c0-f461-4ba2-b1dd-c38b5c767bfb
+		summarizeBy: none
+		sourceColumn: category_marker
+
+		annotation SummarizationSetBy = Automatic
+
+	partition hebci_sector_data_startups = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(Web.Contents("https://myntuac.sharepoint.com/sites/KEBusinessIntelligence/Shared%20Documents/HEBCIS/hebci_sector_data_startups.csv"),[Delimiter=",", Columns=12, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"", Int64.Type}, {"ukprn", Int64.Type}, {"hei", type text}, {"country", type text}, {"region", type text}, {"academic_year", type text}, {"category_marker", type text}, {"activity", type text}, {"type_metric", type text}, {"unit", type text}, {"actual", Int64.Type}, {"beneficiary", type text}}),
+				    #"Split Column by Delimiter" = Table.SplitColumn(#"Changed Type", "academic_year", Splitter.SplitTextByDelimiter("/", QuoteStyle.Csv), {"academic_year.1", "academic_year.2"}),
+				    #"Changed Type1" = Table.TransformColumnTypes(#"Split Column by Delimiter",{{"academic_year.1", Int64.Type}, {"academic_year.2", Int64.Type}}),
+				    #"Added Custom" = Table.AddColumn(#"Changed Type1", "Date", each "01/01/20" & Text.From([academic_year.2])),
+				    #"Changed Type2" = Table.TransformColumnTypes(#"Added Custom",{{"Date", type date}})
+				in
+				    #"Changed Type2"
+
+	annotation PBI_ResultType = Table
+

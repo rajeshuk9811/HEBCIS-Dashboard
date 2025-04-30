@@ -1,0 +1,84 @@
+relationship 307449c1-851d-4741-88ad-f5ccf166ef64
+	crossFilteringBehavior: bothDirections
+	fromColumn: All_data.UKPRN
+	toColumn: KEF_Cluster.UKPRN
+
+relationship 280ff6d2-76ec-47e8-bf7b-7c494df542ef
+	joinOnDateBehavior: datePartOnly
+	fromColumn: HEBCI_report.'Report Generated'
+	toColumn: LocalDateTable_615f1d63-7ccb-4004-b995-9cfe9e59ba00.Date
+
+relationship 94ccde28-c46c-4b27-b4f0-e6181137ec31
+	joinOnDateBehavior: datePartOnly
+	fromColumn: All_data.Start_year
+	toColumn: LocalDateTable_71182d78-761f-4610-a541-bc7033a5cd5e.Date
+
+relationship ed6391be-79a3-4b39-883b-abb4eb0cde50
+	joinOnDateBehavior: datePartOnly
+	fromColumn: All_data.End_year
+	toColumn: LocalDateTable_b10f20a5-fb5b-40e4-a199-4b400dd25f90.Date
+
+relationship 5b686ac9-340f-4105-91ae-b1d8ba32dcb3
+	joinOnDateBehavior: datePartOnly
+	fromColumn: HEBCI_totals.'Report Generated'
+	toColumn: LocalDateTable_522b8319-7558-4ffd-a35d-cf851dc66e15.Date
+
+relationship 879a1fab-76ce-4aae-af0d-af99c8effe2b
+	joinOnDateBehavior: datePartOnly
+	fromColumn: HEBCI_components.'Report Generated'
+	toColumn: LocalDateTable_3c701fc6-9c9c-4e6c-b1e0-78df07c35a73.Date
+
+relationship a2b93c0a-1eb7-4cf5-9d33-6e80a43c9938
+	joinOnDateBehavior: datePartOnly
+	fromColumn: HEBCI_projects.'Report Generated'
+	toColumn: LocalDateTable_1aa63dc3-a757-4b9e-b205-0dd3dd3818a3.Date
+
+relationship 8a529abf-3a22-4ea2-965a-e1e2d60519b5
+	fromColumn: hebci_sector_data_startups.ukprn
+	toColumn: KEF_Cluster.UKPRN
+
+relationship f968261a-31c6-4f83-a093-2219659e399f
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Calendar.Date
+	toColumn: LocalDateTable_6d2c1557-7a22-4c32-bbf6-6bf6d9a16069.Date
+
+relationship d86dd2d3-0659-4402-aa89-75bf49cdbab7
+	crossFilteringBehavior: bothDirections
+	fromColumn: HEBCI_totals.Year
+	toColumn: Calendar.Date
+
+relationship 2ca1d713-72a9-4925-8a79-cf2a480ad199
+	crossFilteringBehavior: bothDirections
+	fromColumn: hebci_sector_data_startups.Date
+	toColumn: Calendar.Date
+
+relationship 150a385f-22a4-44e2-4ecf-016dedf73e38
+	crossFilteringBehavior: bothDirections
+	toCardinality: many
+	fromColumn: All_data.'Academic Year'
+	toColumn: Calendar.Academic_Year
+
+relationship 377483df-bb85-00ce-39e2-e059904ef423
+	crossFilteringBehavior: bothDirections
+	fromColumn: HEBCI_report.'Category Name'
+	toColumn: Description.Title
+
+relationship bd60cb08-4be1-49ad-b9fc-cdb0a0496f10
+	joinOnDateBehavior: datePartOnly
+	fromColumn: HEBCI_components.Year
+	toColumn: LocalDateTable_8a881db2-14f4-46cf-adbd-0e62af1b2964.Date
+
+relationship 97b5b77d-3741-43ce-a1b3-0bdba268cc16
+	joinOnDateBehavior: datePartOnly
+	fromColumn: HEBCI_projects.Year
+	toColumn: LocalDateTable_0c2494a0-386e-45c2-a316-30be266fab94.Date
+
+relationship 3040181b-58ce-4599-a923-314cd60bcaa3
+	joinOnDateBehavior: datePartOnly
+	fromColumn: HEBCI_report.Year
+	toColumn: LocalDateTable_be06ca67-c0d8-4fc8-8dcd-17de121f3ebf.Date
+
+relationship AutoDetected_aa152aac-e15a-4de8-9ba9-b81031bdf756
+	fromColumn: HEBCI_projects.Unique_ID
+	toColumn: HEBCI_components.Unique_ID
+

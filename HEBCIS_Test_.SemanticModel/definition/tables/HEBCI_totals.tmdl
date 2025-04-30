@@ -1,0 +1,201 @@
+table HEBCI_totals
+	lineageTag: a169757c-34fa-496f-8e42-d0ab31b22a4e
+
+	measure Percent_change_totals = ```
+			
+			VAR MinSelectedYear = MIN(HEBCI_totals[Year]) // Get the earliest year selected by the slicer
+			VAR MaxSelectedYear = MAX(HEBCI_totals[Year]) // Get the latest year selected by the slicer
+			VAR MinYearIncome = CALCULATE(SUM(HEBCI_totals[Actual_forecast]), HEBCI_totals[Year] = MinSelectedYear) // Income for the earliest selected year
+			VAR MaxYearIncome = CALCULATE(SUM(HEBCI_totals[Actual_forecast]), HEBCI_totals[Year] = MaxSelectedYear) // Income for the latest selected year
+			RETURN 
+			    IF(
+			        MinYearIncome = 0,
+			        BLANK(),
+			        (MaxYearIncome - MinYearIncome) / MinYearIncome
+			    )
+			```
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 63d96f7c-b4d0-4c5e-9203-ebb98508398c
+
+	measure Header_School_year =
+			
+			"Actual vs planned income by School in " & VAR __DISTINCT_VALUES_COUNT = DISTINCTCOUNT('Calendar'[Year])
+			VAR __MAX_VALUES_TO_SHOW = 3
+			RETURN
+				IF(
+					__DISTINCT_VALUES_COUNT > __MAX_VALUES_TO_SHOW,
+					CONCATENATE(
+						CONCATENATEX(
+							TOPN(
+								__MAX_VALUES_TO_SHOW,
+								VALUES('Calendar'[Year]),
+								'Calendar'[Year],
+								ASC
+							),
+							'Calendar'[Year],
+							", ",
+							'Calendar'[Year],
+							ASC
+						),
+						", etc."
+					),
+					CONCATENATEX(
+						VALUES('Calendar'[Year]),
+						'Calendar'[Year],
+						", ",
+						'Calendar'[Year],
+						ASC
+					)
+				)
+		lineageTag: 28733230-3315-4997-b870-e15c39fc942f
+
+	measure Today = TODAY()
+		formatString: General Date
+		lineageTag: 4bf96d91-715d-4d44-875b-a1299dd980ef
+
+	column Category
+		dataType: string
+		lineageTag: 623b79af-53c9-45fa-81c4-8a5e7ec74633
+		summarizeBy: none
+		sourceColumn: Category
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Category Name'
+		dataType: string
+		lineageTag: c2077765-0d05-4b9c-a6f5-fb468cb6957e
+		summarizeBy: none
+		sourceColumn: Category Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column Structure
+		dataType: string
+		lineageTag: 08408ddc-b765-4b51-a1cf-c9d7264b084c
+		summarizeBy: none
+		sourceColumn: Structure
+
+		annotation SummarizationSetBy = Automatic
+
+	column School
+		dataType: string
+		lineageTag: e11d6646-e076-4773-961d-35d9255dfa36
+		summarizeBy: none
+		sourceColumn: School
+
+		annotation SummarizationSetBy = Automatic
+
+	column Year
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 2d5749c6-a929-4032-b8b6-99030a0800ea
+		summarizeBy: none
+		sourceColumn: Year
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Academic Year'
+		dataType: string
+		lineageTag: 64df995e-335e-46b2-ad08-c66b75a607ad
+		summarizeBy: none
+		sourceColumn: Academic Year
+
+		annotation SummarizationSetBy = Automatic
+
+	column Income
+		dataType: double
+		lineageTag: d748475e-a062-473f-a3b1-bd28f7127033
+		summarizeBy: sum
+		sourceColumn: Income
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Report Generated'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 44085efb-9ea1-43c7-b6ff-7a5a6910a68f
+		summarizeBy: none
+		sourceColumn: Report Generated
+
+		variation Variation
+			isDefault
+			relationship: 5b686ac9-340f-4105-91ae-b1d8ba32dcb3
+			defaultHierarchy: LocalDateTable_522b8319-7558-4ffd-a35d-cf851dc66e15.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Perspective
+		dataType: string
+		lineageTag: 37891d03-21ff-4900-8faf-8bdfd591a647
+		summarizeBy: none
+		sourceColumn: Perspective
+
+		annotation SummarizationSetBy = Automatic
+
+	column Metric
+		dataType: string
+		lineageTag: 41d53065-8967-4f92-8912-3035af12bdd4
+		summarizeBy: none
+		sourceColumn: Metric
+
+		annotation SummarizationSetBy = Automatic
+
+	column Actual_forecast
+		dataType: double
+		lineageTag: c687767a-f550-4da9-b082-8b23f70e53b1
+		summarizeBy: sum
+		sourceColumn: Actual_forecast
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column FilterPS
+		dataType: string
+		lineageTag: 85a5b051-bad8-4841-b7bf-0cd5cf3016fd
+		summarizeBy: none
+		sourceColumn: FilterPS
+
+		annotation SummarizationSetBy = Automatic
+
+	column actual_to_last_reporting_period
+		dataType: double
+		lineageTag: 36bf9271-0c9b-442c-b2eb-f396221244d2
+		summarizeBy: sum
+		sourceColumn: actual_to_last_reporting_period
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition HEBCI_totals-b1715c37-e0e9-478c-91be-3c1051d9a3f9 = m
+		mode: import
+		source = ```
+				let
+				    Source = Excel.Workbook(Web.Contents("https://myntuac.sharepoint.com/sites/KEBusinessIntelligence/Shared%20Documents/HEBCIS/HEBCI_clean.xlsx"), null, true),
+				    Table2_Table = Source{[Item="Table2",Kind="Table"]}[Data],
+				    #"Changed Type" = Table.TransformColumnTypes(Table2_Table,{{"Category", type text}, {"Category Name", type text}, {"Structure", type text}, {"School", type text}, {"Year", type datetime}, {"Academic Year", type text}, {"Income", type number}, {"Report Generated", type date}, {"Perspective", type text}, {"Metric", type text}}),
+				    #"Added Custom" = Table.AddColumn(#"Changed Type", "Actual_planned_forecast", each if [Income] = null then [Planned Income] else [Income]),
+				    #"Changed Type1" = Table.TransformColumnTypes(#"Added Custom",{{"Actual_planned_forecast", type number}}),
+				    #"Added Custom1" = Table.AddColumn(#"Changed Type1", "Actual_forecast", each if Date.Year([Year]) < Date.Year(DateTime.LocalNow()) or 
+				(Date.Year([Year]) = Date.Year(DateTime.LocalNow()) 
+				and Date.Month([Year]) < 8) 
+				then [Income] 
+				else [Planned Income]),
+				    #"Added Custom2" = Table.AddColumn(#"Added Custom1", "FilterPS", each if [School] = "PS" then "PS only" else "Include/Exclude PS"),
+				    #"Removed Columns" = Table.RemoveColumns(#"Added Custom2",{"Actual_planned_forecast"}),
+				    #"Added Custom3" = Table.AddColumn(#"Removed Columns", "actual_to_last_reporting_period", each if Date.Year([Year]) <= Date.Year(DateTime.LocalNow()) then [Income] else null)
+				in
+				    #"Added Custom3"
+				```
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "HEBCIS_Test_"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "b7c730b8-ed8c-48f9-9206-98c86bdd42a7"
+  }
+}

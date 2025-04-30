@@ -1,0 +1,233 @@
+table HEBCI_projects
+	lineageTag: bce391e1-2560-4be4-9b7c-6ba9feceb118
+
+	measure Percent_change_projects = ```
+			
+			VAR MinSelectedYear = MIN(HEBCI_projects[Year]) // Get the earliest year selected by the slicer
+			VAR MaxSelectedYear = MAX(HEBCI_projects[Year]) // Get the latest year selected by the slicer
+			VAR MinYearIncome = CALCULATE(SUM(HEBCI_projects[Income]), HEBCI_projects[Year] = MinSelectedYear) // Income for the earliest selected year
+			VAR MaxYearIncome = CALCULATE(SUM(HEBCI_projects[Income]), HEBCI_projects[Year] = MaxSelectedYear) // Income for the latest selected year
+			RETURN 
+			    IF(
+			        MinYearIncome = 0,
+			        BLANK(),
+			        (MaxYearIncome - MinYearIncome) / MinYearIncome
+			    )
+			```
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 6bd943ef-b5d4-4d6a-b0ac-fc1adff500f6
+
+	measure Sub-Title1 = ```
+			
+			VAR SelectedCategories = VALUES('HEBCI_projects'[Category Name])
+			VAR CategoryCount = COUNTROWS(SelectedCategories)
+			
+			VAR Subtitle = 
+			    SWITCH(
+			        TRUE(),
+			        CategoryCount = 1, 
+			            LOOKUPVALUE('Description'[Sub_Title], 'Description'[Title], SELECTEDVALUE('HEBCI_projects'[Category Name])),
+			        CategoryCount = 2, 
+			            CONCATENATEX(
+			                SelectedCategories, 
+			                LOOKUPVALUE('Description'[Sub_Title], 'Description'[Title], 'HEBCI_projects'[Category Name]), 
+			                ", "
+			            ),
+			        CategoryCount > 2, 
+			            "Please select a single HE-BCI Category to view the description",
+			        "All Categories"
+			    )
+			RETURN
+			    Subtitle
+			
+			```
+		lineageTag: 3d333d26-1a60-45ee-8d4d-f66a385e6506
+
+	measure Selected_Description1 = ```
+			
+			VAR SelectedCategories = VALUES('HEBCI_projects'[Category Name])
+			VAR CategoryCount = COUNTROWS(SelectedCategories)
+			
+			VAR SelectedDescription = 
+			    SWITCH(
+			        TRUE(),
+			         CategoryCount = 0, 
+			            "Please select a single HE-BCI Category to view the description",  -- Message when nothing is selected
+			
+			        CategoryCount = 1, 
+			            LOOKUPVALUE(
+			                'Description'[Description], 
+			                'Description'[Title], 
+			                SELECTEDVALUE('HEBCI_projects'[Category Name])
+			            ),
+			        CategoryCount = 2, 
+			            CONCATENATEX(
+			                SelectedCategories, 
+			                LOOKUPVALUE(
+			                    'Description'[Description], 
+			                    'Description'[Title], 
+			                    'HEBCI_projects'[Category Name]
+			                ), 
+			               UNICHAR(10) & "_______________________________________________________________________________________________________" & UNICHAR(10)  -- Adds separator line
+			            ),
+			        CategoryCount > 2, 
+			            "Please select a single HE-BCI Category to view the description",
+			        "All Categories"
+			    )
+			RETURN
+			    IF(SelectedDescription = BLANK(), "No Description Available", SelectedDescription)
+			
+			```
+		lineageTag: fe03fbcf-54b0-44ad-b5f1-f0c6fa70c4bb
+
+	column Category
+		dataType: string
+		lineageTag: 2abf5a8c-4a65-42c0-9b22-84f4c45d25f4
+		summarizeBy: none
+		sourceColumn: Category
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Category Name'
+		dataType: string
+		lineageTag: 91a160c5-a1d6-4d0d-ac09-06c4918cf3b9
+		summarizeBy: none
+		sourceColumn: Category Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Parent Element'
+		dataType: string
+		lineageTag: 7f20fd04-266e-4c04-9119-80b96bc59d2b
+		summarizeBy: none
+		sourceColumn: Parent Element
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Category Marker'
+		dataType: string
+		lineageTag: dd5abb8c-e5ac-4b8c-8357-b4618b2896e1
+		summarizeBy: none
+		sourceColumn: Category Marker
+
+		annotation SummarizationSetBy = Automatic
+
+	column Structure
+		dataType: string
+		lineageTag: c7a1c6de-cc09-47c6-a474-54564abc850e
+		summarizeBy: none
+		sourceColumn: Structure
+
+		annotation SummarizationSetBy = Automatic
+
+	column School
+		dataType: string
+		lineageTag: f461b28a-79d0-43c8-8664-8818bdbe0c37
+		summarizeBy: none
+		sourceColumn: School
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Activity Code'
+		dataType: string
+		lineageTag: fbcb38a3-78cf-4f28-bafd-b1b2a10c5840
+		summarizeBy: none
+		sourceColumn: Activity Code
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Activity Description'
+		dataType: string
+		lineageTag: 3abb56c4-b383-42b2-95a9-54ad8ec95d4d
+		summarizeBy: none
+		sourceColumn: Activity Description
+
+		annotation SummarizationSetBy = Automatic
+
+	column Year
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 283e7785-eb4e-4880-8316-ae9b7ed1d8cf
+		summarizeBy: none
+		sourceColumn: Year
+
+		variation Variation
+			isDefault
+			relationship: 97b5b77d-3741-43ce-a1b3-0bdba268cc16
+			defaultHierarchy: LocalDateTable_0c2494a0-386e-45c2-a316-30be266fab94.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Academic Year'
+		dataType: string
+		lineageTag: 3ba0c0a8-bbc4-4d50-bdf5-3e7fafe10ccd
+		summarizeBy: none
+		sourceColumn: Academic Year
+
+		annotation SummarizationSetBy = Automatic
+
+	column Income
+		dataType: double
+		lineageTag: e64ccc81-33a9-448c-a20b-c811b2b7f196
+		summarizeBy: sum
+		sourceColumn: Income
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Report Generated'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 24bc663e-cc91-4947-8190-3589a53e655c
+		summarizeBy: none
+		sourceColumn: Report Generated
+
+		variation Variation
+			isDefault
+			relationship: a2b93c0a-1eb7-4cf5-9d33-6e80a43c9938
+			defaultHierarchy: LocalDateTable_1aa63dc3-a757-4b9e-b205-0dd3dd3818a3.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Perspective
+		dataType: string
+		lineageTag: 52c95aba-5c64-4c99-a7d6-ad2778553d91
+		summarizeBy: none
+		sourceColumn: Perspective
+
+		annotation SummarizationSetBy = Automatic
+
+	column Metric
+		dataType: string
+		lineageTag: f47228bd-3d43-4978-b59e-c924bbb3d52f
+		summarizeBy: none
+		sourceColumn: Metric
+
+		annotation SummarizationSetBy = Automatic
+
+	column Unique_ID
+		dataType: string
+		lineageTag: 2c4ae947-5783-4f13-b1a9-cf3341e19a4c
+		summarizeBy: none
+		sourceColumn: Unique_ID
+
+		annotation SummarizationSetBy = Automatic
+
+	partition HEBCI_projects-71f171e0-b9bc-4f96-a443-a36125b8c411 = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(Web.Contents("https://myntuac.sharepoint.com/sites/KEBusinessIntelligence/Shared%20Documents/HEBCIS/HEBCI_clean.xlsx"), null, true),
+				    Table4_Table = Source{[Item="Table4",Kind="Table"]}[Data],
+				    #"Changed Type" = Table.TransformColumnTypes(Table4_Table,{{"Category", type text}, {"Category Name", type text}, {"Parent Element", type text}, {"Category Marker", type text}, {"Structure", type text}, {"School", type text}, {"Activity Code", type text}, {"Activity Description", type text}, {"Year", type datetime}, {"Academic Year", type text}, {"Income", type number}, {"Report Generated", type date}, {"Perspective", type text}, {"Metric", type text}}),
+				    #"Added Custom" = Table.AddColumn(#"Changed Type", "Unique_ID", each [Academic Year] & "_" & [Category Marker] & "_" & [Category Name] & "_" & [School] & "_" & [Structure] & "_" & [Perspective])
+				in
+				    #"Added Custom"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

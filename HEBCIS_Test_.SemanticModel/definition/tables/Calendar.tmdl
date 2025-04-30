@@ -1,0 +1,102 @@
+table Calendar
+	lineageTag: ef86bd51-0b41-4932-8442-d906185d7d3a
+
+	column Date
+		formatString: General Date
+		lineageTag: 94868c7c-0586-46a6-9b06-3209680f4a6d
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Date]
+
+		variation Variation
+			isDefault
+			relationship: f968261a-31c6-4f83-a093-2219659e399f
+			defaultHierarchy: LocalDateTable_6d2c1557-7a22-4c32-bbf6-6bf6d9a16069.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Year
+		formatString: 0
+		lineageTag: 0d43363e-e88d-46f3-9b6f-bf777579cf22
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Year]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Quarter
+		lineageTag: 4977797e-c318-4cb5-af7d-37f4cbb5d6da
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Quarter]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Month number'
+		lineageTag: 993fb861-61ac-475f-97fa-98c4ac52c81e
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Month number]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Week day number'
+		formatString: 0
+		lineageTag: 65eca442-1ad6-454d-91b0-82ddb6e6f84d
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Week day number]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Day
+		formatString: 0
+		lineageTag: e44e6dde-c4db-4b4d-a4f1-73e0c18c4b9f
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Day]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Week day'
+		lineageTag: 569d7068-fe9e-44ee-86cc-57eb0bf7a7a2
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Week day]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Academic_Year = ```
+			
+			IF(
+			    MONTH('Calendar'[Date]) >= 8, 
+			    YEAR('Calendar'[Date]) & "/" & RIGHT(YEAR('Calendar'[Date]) + 1, 2), 
+			    YEAR('Calendar'[Date]) - 1 & "/" & RIGHT(YEAR('Calendar'[Date]), 2)
+			)
+			```
+		lineageTag: ff3b3cd2-3243-4ba4-a295-c5cfa48cd049
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Calendar-0fc4660d-4ecf-4f82-a50f-9ce6b8a39948 = calculated
+		mode: import
+		source =
+				
+				VAR
+				    _startDate = Date(2015, 1, 1)
+				VAR
+				    _endDate = DATE(2026, 1, 1)
+				RETURN
+				    ADDCOLUMNS(
+				        CALENDAR(_startDate, _endDate),
+				        "Year", YEAR([Date]),
+				        "Quarter", "Q" & QUARTER([Date]),
+				        "Month number", FORMAT([Date], "mmm"),
+				        "Week day number", WEEKDAY([Date], 2),
+				        "Week day", FORMAT([Date], "ddd"),
+				        "Day", DAY([Date])
+				    )
+
+	annotation PBI_Id = 9f45dd65987b436cbcaa2228a470e308
+

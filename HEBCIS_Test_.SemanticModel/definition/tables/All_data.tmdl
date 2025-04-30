@@ -1,0 +1,575 @@
+table All_data
+	lineageTag: fdfdc118-3997-4941-aeb4-39b1da201fef
+
+	measure 'List of Year values' =
+			
+			"Cluster E total income in " & VAR __DISTINCT_VALUES_COUNT = DISTINCTCOUNT('Calendar'[Year])
+			VAR __MAX_VALUES_TO_SHOW = 4
+			RETURN
+				IF(
+					__DISTINCT_VALUES_COUNT > __MAX_VALUES_TO_SHOW,
+					CONCATENATE(
+						CONCATENATEX(
+							TOPN(
+								__MAX_VALUES_TO_SHOW,
+								VALUES('Calendar'[Year]),
+								'Calendar'[Year],
+								ASC
+							),
+							'Calendar'[Year],
+							", ",
+							'Calendar'[Year],
+							ASC
+						),
+						", etc."
+					),
+					CONCATENATEX(
+						VALUES('Calendar'[Year]),
+						'Calendar'[Year],
+						", ",
+						'Calendar'[Year],
+						ASC
+					)
+				)
+		lineageTag: 2ba70a11-9df3-4483-b834-bd1573c8b63f
+
+		extendedProperty MeasureTemplate =
+				{
+				  "version": 0,
+				  "daxTemplateName": "ConcatenateValues"
+				}
+
+	measure 'Cluster_year header' =
+			
+			"Cluster  " & VAR __DISTINCT_VALUES_COUNT = DISTINCTCOUNT('KEF_Cluster'[Cluster])
+			VAR __MAX_VALUES_TO_SHOW = 3
+			RETURN
+				IF(
+					__DISTINCT_VALUES_COUNT > __MAX_VALUES_TO_SHOW,
+					CONCATENATE(
+						CONCATENATEX(
+							TOPN(
+								__MAX_VALUES_TO_SHOW,
+								VALUES('KEF_Cluster'[Cluster]),
+								'KEF_Cluster'[Cluster],
+								ASC
+							),
+							'KEF_Cluster'[Cluster],
+							", ",
+							'KEF_Cluster'[Cluster],
+							ASC
+						),
+						", etc."
+					),
+					CONCATENATEX(
+						VALUES('KEF_Cluster'[Cluster]),
+						'KEF_Cluster'[Cluster],
+						", ",
+						'KEF_Cluster'[Cluster],
+						ASC
+					)
+				) & " " & VAR __DISTINCT_VALUES_COUNT = DISTINCTCOUNT('All_data'[Metric])
+			VAR __MAX_VALUES_TO_SHOW = 3
+			RETURN
+				IF(
+					__DISTINCT_VALUES_COUNT > __MAX_VALUES_TO_SHOW,
+					CONCATENATE(
+						CONCATENATEX(
+							TOPN(
+								__MAX_VALUES_TO_SHOW,
+								VALUES('All_data'[Metric]),
+								'All_data'[Metric],
+								ASC
+							),
+							'All_data'[Metric],
+							", ",
+							'All_data'[Metric],
+							ASC
+						),
+						", etc."
+					),
+					CONCATENATEX(
+						VALUES('All_data'[Metric]),
+						'All_data'[Metric],
+						", ",
+						'All_data'[Metric],
+						ASC
+					) & " in " & VAR __DISTINCT_VALUES_COUNT = DISTINCTCOUNT('Calendar'[Year])
+			VAR __MAX_VALUES_TO_SHOW = 3
+			RETURN
+				IF(
+					__DISTINCT_VALUES_COUNT > __MAX_VALUES_TO_SHOW,
+					CONCATENATE(
+						CONCATENATEX(
+							TOPN(
+								__MAX_VALUES_TO_SHOW,
+								VALUES('Calendar'[Year]),
+								'Calendar'[Year],
+								ASC
+							),
+							'Calendar'[Year],
+							", ",
+							'Calendar'[Year],
+							ASC
+						),
+						", etc."
+					),
+					CONCATENATEX(
+						VALUES('Calendar'[Year]),
+						'Calendar'[Year],
+						", ",
+						'Calendar'[Year],
+						ASC
+					)
+				))
+		lineageTag: 6d284aaf-0829-4943-a0b1-eca835928ef6
+
+	measure 'Cluster value sum' = sum(All_data[Value])
+		formatString: 0
+		lineageTag: a66591f9-e687-4d1a-a839-a9811f33bbf0
+
+	measure Quintile =
+			
+			CALCULATE(
+			    PERCENTILEX.INC(
+			        'All_data',
+			        'All_data'[Value],
+			        0.8
+			    ),
+			    ALLSELECTED('All_data')
+			)
+		lineageTag: 88399420-6a6e-42cd-a741-0b1da9989ead
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Cluster_metric header' =
+			
+			"Cluster  " & VAR __DISTINCT_VALUES_COUNT = DISTINCTCOUNT('KEF_Cluster'[Cluster])
+			VAR __MAX_VALUES_TO_SHOW = 3
+			RETURN
+				IF(
+					__DISTINCT_VALUES_COUNT > __MAX_VALUES_TO_SHOW,
+					CONCATENATE(
+						CONCATENATEX(
+							TOPN(
+								__MAX_VALUES_TO_SHOW,
+								VALUES('KEF_Cluster'[Cluster]),
+								'KEF_Cluster'[Cluster],
+								ASC
+							),
+							'KEF_Cluster'[Cluster],
+							", ",
+							'KEF_Cluster'[Cluster],
+							ASC
+						),
+						", etc."
+					),
+					CONCATENATEX(
+						VALUES('KEF_Cluster'[Cluster]),
+						'KEF_Cluster'[Cluster],
+						", ",
+						'KEF_Cluster'[Cluster],
+						ASC
+					)
+				) & " " & VAR __DISTINCT_VALUES_COUNT = DISTINCTCOUNT('All_data'[Metric])
+			VAR __MAX_VALUES_TO_SHOW = 3
+			RETURN
+				IF(
+					__DISTINCT_VALUES_COUNT > __MAX_VALUES_TO_SHOW,
+					CONCATENATE(
+						CONCATENATEX(
+							TOPN(
+								__MAX_VALUES_TO_SHOW,
+								VALUES('All_data'[Metric]),
+								'All_data'[Metric],
+								ASC
+							),
+							'All_data'[Metric],
+							", ",
+							'All_data'[Metric],
+							ASC
+						),
+						", etc."
+					),
+					CONCATENATEX(
+						VALUES('All_data'[Metric]),
+						'All_data'[Metric],
+						", ",
+						'All_data'[Metric],
+						ASC
+					))
+		lineageTag: 2a775625-575d-4f6e-a311-a680cb9abc1b
+
+	measure 'Metric header' =
+			
+			"NTU " & VAR __DISTINCT_VALUES_COUNT = DISTINCTCOUNT('All_data'[Metric])
+			VAR __MAX_VALUES_TO_SHOW = 3
+			RETURN
+				IF(
+					__DISTINCT_VALUES_COUNT > __MAX_VALUES_TO_SHOW,
+					CONCATENATE(
+						CONCATENATEX(
+							TOPN(
+								__MAX_VALUES_TO_SHOW,
+								VALUES('All_data'[Metric]),
+								'All_data'[Metric],
+								ASC
+							),
+							'All_data'[Metric],
+							", ",
+							'All_data'[Metric],
+							ASC
+						),
+						", etc."
+					),
+					CONCATENATEX(
+						VALUES('All_data'[Metric]),
+						'All_data'[Metric],
+						", ",
+						'All_data'[Metric],
+						ASC
+					))
+		lineageTag: f97bf8e3-8885-4020-a02c-1cf55c27895d
+
+	measure 'Minimum value' = MINX(VALUES(All_data[Value]), [Value])
+		formatString: 0
+		lineageTag: b7ab5e54-67c9-4c15-9a89-3a73c9ae856f
+
+	measure Rank = ```
+			
+			RANKX(
+			    ALLSELECTED('All_data'), 
+			    CALCULATE(SUM('All_data'[Value])),
+			    , DESC, Dense
+			)
+			
+			```
+		formatString: 0
+		lineageTag: 0e5bce99-13d6-49b8-9466-ca3bcf65d91a
+
+	measure 'HEI_metric header' =
+			
+			VAR __DISTINCT_VALUES_COUNT = DISTINCTCOUNT('KEF_Cluster'[HEI])
+			VAR __MAX_VALUES_TO_SHOW = 3
+			RETURN
+				IF(
+					__DISTINCT_VALUES_COUNT > __MAX_VALUES_TO_SHOW,
+					CONCATENATE(
+						CONCATENATEX(
+							TOPN(
+								__MAX_VALUES_TO_SHOW,
+								VALUES('KEF_Cluster'[HEI]),
+								'KEF_Cluster'[HEI],
+								ASC
+							),
+							'KEF_Cluster'[HEI],
+							", ",
+							'KEF_Cluster'[HEI],
+							ASC
+						),
+						", etc."
+					),
+					CONCATENATEX(
+						VALUES('KEF_Cluster'[HEI]),
+						'KEF_Cluster'[HEI],
+						", ",
+						'KEF_Cluster'[HEI],
+						ASC
+					)
+				) & " " & VAR __DISTINCT_VALUES_COUNT = DISTINCTCOUNT('All_data'[Metric])
+			VAR __MAX_VALUES_TO_SHOW = 3
+			RETURN
+				IF(
+					__DISTINCT_VALUES_COUNT > __MAX_VALUES_TO_SHOW,
+					CONCATENATE(
+						CONCATENATEX(
+							TOPN(
+								__MAX_VALUES_TO_SHOW,
+								VALUES('All_data'[Metric]),
+								'All_data'[Metric],
+								ASC
+							),
+							'All_data'[Metric],
+							", ",
+							'All_data'[Metric],
+							ASC
+						),
+						", etc."
+					),
+					CONCATENATEX(
+						VALUES('All_data'[Metric]),
+						'All_data'[Metric],
+						", ",
+						'All_data'[Metric],
+						ASC
+					))
+		lineageTag: 8d7dafed-2a4c-44aa-8b75-416a98f2e460
+
+	measure Metric_year_header =
+			
+			VAR __DISTINCT_VALUES_COUNT = DISTINCTCOUNT('All_data'[Metric])
+			VAR __MAX_VALUES_TO_SHOW = 3
+			RETURN
+				IF(
+					__DISTINCT_VALUES_COUNT > __MAX_VALUES_TO_SHOW,
+					CONCATENATE(
+						CONCATENATEX(
+							TOPN(
+								__MAX_VALUES_TO_SHOW,
+								VALUES('All_data'[Metric]),
+								'All_data'[Metric],
+								ASC
+							),
+							'All_data'[Metric],
+							", ",
+							'All_data'[Metric],
+							ASC
+						),
+						", etc."
+					),
+					CONCATENATEX(
+						VALUES('All_data'[Metric]),
+						'All_data'[Metric],
+						", ",
+						'All_data'[Metric],
+						ASC
+					) & " in " & VAR __DISTINCT_VALUES_COUNT = DISTINCTCOUNT('Calendar'[Year])
+			VAR __MAX_VALUES_TO_SHOW = 3
+			RETURN
+				IF(
+					__DISTINCT_VALUES_COUNT > __MAX_VALUES_TO_SHOW,
+					CONCATENATE(
+						CONCATENATEX(
+							TOPN(
+								__MAX_VALUES_TO_SHOW,
+								VALUES('Calendar'[Year]),
+								'Calendar'[Year],
+								ASC
+							),
+							'Calendar'[Year],
+							", ",
+							'Calendar'[Year],
+							ASC
+						),
+						", etc."
+					),
+					CONCATENATEX(
+						VALUES('Calendar'[Year]),
+						'Calendar'[Year],
+						", ",
+						'Calendar'[Year],
+						ASC
+					)
+				))
+		lineageTag: 01c4f033-6a4f-4c05-a5fb-00092aab4f29
+
+	column UKPRN
+		dataType: int64
+		formatString: 0
+		lineageTag: 8fda7303-000a-462c-942e-b59bf1a0a46b
+		summarizeBy: none
+		sourceColumn: UKPRN
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'HE Provider'
+		dataType: string
+		lineageTag: 4ed89766-b615-4811-965b-55772fca4f37
+		summarizeBy: none
+		sourceColumn: HE Provider
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Country of HE provider'
+		dataType: string
+		lineageTag: 82bffc9e-a378-4ee4-b4b2-4480a6671f75
+		summarizeBy: none
+		sourceColumn: Country of HE provider
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Region of HE provider'
+		dataType: string
+		lineageTag: 50bdf66b-5136-4c5a-b930-1d2887b78dec
+		summarizeBy: none
+		sourceColumn: Region of HE provider
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Academic Year'
+		dataType: string
+		lineageTag: 9e998bc1-af99-4299-920f-b5e2f8d28781
+		summarizeBy: none
+		sourceColumn: Academic Year
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Type of service'
+		dataType: string
+		lineageTag: 4f859521-f0c6-419a-a960-3b4bd070e2fe
+		summarizeBy: none
+		sourceColumn: Type of service
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Category marker'
+		dataType: string
+		lineageTag: 84fa0f76-f59d-4dc5-9e68-83f035259fe9
+		summarizeBy: none
+		sourceColumn: Category marker
+
+		annotation SummarizationSetBy = Automatic
+
+	column Unit
+		dataType: string
+		lineageTag: 4c2bbf85-bf18-4e71-8ce0-d23677c6b82c
+		summarizeBy: none
+		sourceColumn: Unit
+
+		annotation SummarizationSetBy = Automatic
+
+	column Value
+		dataType: int64
+		formatString: #,0
+		lineageTag: d48cbc6a-9420-4f9a-8133-73cd55f0f325
+		summarizeBy: sum
+		sourceColumn: Value
+
+		changedProperty = FormatString
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isDecimal":true}
+
+	column Metric
+		dataType: string
+		lineageTag: 89f175da-f585-4482-85a2-c1d23100f9ed
+		summarizeBy: none
+		sourceColumn: Metric
+
+		annotation SummarizationSetBy = Automatic
+
+	column Start_year
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 2932fbed-228b-4fd5-b501-d136c74d6bc1
+		summarizeBy: none
+		sourceColumn: Start_year
+
+		variation Variation
+			isDefault
+			relationship: 94ccde28-c46c-4b27-b4f0-e6181137ec31
+			defaultHierarchy: LocalDateTable_71182d78-761f-4610-a541-bc7033a5cd5e.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column End_year
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 203ccd00-2057-41c1-b489-942e9efb3397
+		summarizeBy: none
+		sourceColumn: End_year
+
+		variation Variation
+			isDefault
+			relationship: ed6391be-79a3-4b39-883b-abb4eb0cde50
+			defaultHierarchy: LocalDateTable_b10f20a5-fb5b-40e4-a199-4b400dd25f90.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column metric_filter
+		dataType: string
+		lineageTag: 66550cec-556a-482c-ba97-28b13e28c41e
+		summarizeBy: none
+		sourceColumn: metric_filter
+
+		annotation SummarizationSetBy = Automatic
+
+	column breakdown_filter
+		dataType: string
+		lineageTag: b55d5cdf-bdf1-4596-a3c2-4852621dc6b1
+		summarizeBy: none
+		sourceColumn: breakdown_filter
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Income source'
+		dataType: string
+		lineageTag: b9f7fea8-8a83-4ab5-964d-a4372c7a711d
+		summarizeBy: none
+		sourceColumn: Income source
+
+		annotation SummarizationSetBy = Automatic
+
+	column Totals
+		dataType: string
+		lineageTag: eb9cf9e0-67dd-46a5-b500-b5156968b1e0
+		summarizeBy: none
+		sourceColumn: Totals
+
+		annotation SummarizationSetBy = Automatic
+
+	column Datetime
+		dataType: string
+		lineageTag: b57c1113-def5-4ac1-8a35-c42fa2f53699
+		summarizeBy: none
+		sourceColumn: Datetime
+
+		annotation SummarizationSetBy = Automatic
+
+	column Year
+		dataType: string
+		lineageTag: d093d347-d55f-4bfe-bf28-5489a1673944
+		summarizeBy: none
+		sourceColumn: Year
+
+		annotation SummarizationSetBy = Automatic
+
+	partition All_data-840b2f80-fdf3-4fcd-8f92-9d21d4dee2c5 = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(Web.Contents("https://myntuac.sharepoint.com/sites/KEBusinessIntelligence/Shared%20Documents/HEBCIS/HEBCIS%20Data%20for%20PBI.xlsx"), null, true),
+				    All_data_Table = Source{[Item="All_data",Kind="Table"]}[Data],
+				    #"Changed Type" = Table.TransformColumnTypes(All_data_Table,{{"UKPRN", Int64.Type}, {"HE Provider", type text}, {"Country of HE provider", type text}, {"Region of HE provider", type text}, {"Academic Year", type text}, {"Type of service", type text}, {"Category marker", type text}, {"Unit", type text}, {"Value", Int64.Type}, {"Date", type date}, {"Date2", type date}}),
+				    #"Replaced Value" = Table.ReplaceValue(#"Changed Type","Other (non-SME) commercial businesses","Non SME businesses",Replacer.ReplaceValue,{"Category marker"}),
+				    #"Filtered Rows" = Table.SelectRows(#"Replaced Value", each true),
+				    #"Replaced Value1" = Table.ReplaceValue(#"Filtered Rows","Capital income (attributable to survey year)","Capital",Replacer.ReplaceValue,{"Category marker"}),
+				    #"Replaced Value2" = Table.ReplaceValue(#"Replaced Value1","ERDF income","ERDF",Replacer.ReplaceValue,{"Category marker"}),
+				    #"Replaced Value3" = Table.ReplaceValue(#"Replaced Value2","ESF income","ESF",Replacer.ReplaceValue,{"Category marker"}),
+				    #"Replaced Value4" = Table.ReplaceValue(#"Replaced Value3","Other regeneration grants and income from local and regional bodies","Other regen funding",Replacer.ReplaceText,{"Category marker"}),
+				    #"Replaced Value5" = Table.ReplaceValue(#"Replaced Value4","Capital income (attributable to survey year)","Capital",Replacer.ReplaceText,{"Category marker"}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Replaced Value5",{"Date", "Date2"}),
+				    #"Changed Type1" = Table.TransformColumnTypes(#"Removed Columns",{{"Academic Year", type text}}),
+				    #"Added Custom" = Table.AddColumn(#"Changed Type1", "Custom", each "01 September "& Text.Range([Academic Year],2,2)),
+				    #"Added Custom1" = Table.AddColumn(#"Added Custom", "End_year", each "31 August "& Text.Range([Academic Year],5,2)),
+				    #"Renamed Columns" = Table.RenameColumns(#"Added Custom1",{{"Custom", "Start_year"}}),
+				    #"Added Custom5" = Table.AddColumn(#"Renamed Columns", "Datetime", each DateTime.From([End_year])),
+				    #"Changed Type2" = Table.TransformColumnTypes(#"Added Custom5",{{"End_year", type date}, {"Start_year", type date}}),
+				    #"Replaced Value6" = Table.ReplaceValue(#"Changed Type2","Other (non-SMEs) commercial businesses","Non SME businesses",Replacer.ReplaceText,{"Category marker"}),
+				    #"Replaced Value7" = Table.ReplaceValue(#"Replaced Value6","CE and CPD for individuals","Individuals",Replacer.ReplaceText,{"Category marker"}),
+				    #"Replaced Value8" = Table.ReplaceValue(#"Replaced Value7","ERDF income","ERDF",Replacer.ReplaceValue,{"Source of public funding"}),
+				    #"Replaced Value9" = Table.ReplaceValue(#"Replaced Value8","ESF income","ESF",Replacer.ReplaceValue,{"Source of public funding"}),
+				    #"Replaced Value10" = Table.ReplaceValue(#"Replaced Value9","Other regeneration grants and income from local and regional bodies","Local & regional regen grants",Replacer.ReplaceValue,{"Source of public funding"}),
+				    #"Replaced Value11" = Table.ReplaceValue(#"Replaced Value10","UK Government regeneration funds","UK gov't regen funds",Replacer.ReplaceValue,{"Source of public funding"}),
+				    #"Replaced Value12" = Table.ReplaceValue(#"Replaced Value11","Capital income (attributable to survey year)","Capital",Replacer.ReplaceValue,{"Source of public funding"}),
+				    #"Added Custom3" = Table.AddColumn(#"Replaced Value12", "breakdown_filter", each if [Type of service] = "Regeneration and development" or [Type of service] = "Collaborative research" then [Category marker] else [Source of public funding]),
+				    #"Merged Columns" = Table.CombineColumns(Table.TransformColumnTypes(#"Added Custom3", {{"Income source", type text}, {"Source of public funding", type text}}, "en-GB"),{"Income source", "Source of public funding"},Combiner.CombineTextByDelimiter("", QuoteStyle.None),"Income source.1"),
+				    #"Renamed Columns1" = Table.RenameColumns(#"Merged Columns",{{"Income source.1", "Income source"}}),
+				    #"Replaced Value13" = Table.ReplaceValue(#"Renamed Columns1","EU government","EU",Replacer.ReplaceText,{"Income source"}),
+				    #"Replaced Value14" = Table.ReplaceValue(#"Replaced Value13","BEIS Research Councils","BEIS",Replacer.ReplaceText,{"Income source"}),
+				    #"Replaced Value15" = Table.ReplaceValue(#"Replaced Value14","Other UK government departments","UK gov't depts",Replacer.ReplaceText,{"Income source"}),
+				    #"Replaced Value16" = Table.ReplaceValue(#"Replaced Value15","UKRI Research Councils, Royal Society and British Academy","UKRI, RS and BA",Replacer.ReplaceText,{"Income source"}),
+				    #"Added Custom2" = Table.AddColumn(#"Replaced Value16", "metric_filter", each if [Category marker] is null then [Type of service] & " " & [Income source] else [Type of service] & " " & [Category marker]),
+				    #"Added Custom4" = Table.AddColumn(#"Added Custom2", "Totals", each if [Type of service] = "Collaborative research" and [Income source] = "All" then null else [Value]),
+				    #"Added Custom6" = Table.AddColumn(#"Added Custom4", "Year", each Date.Year([End_year])),
+				    #"Filtered Rows1" = Table.SelectRows(#"Added Custom6", each true)
+				in
+				    #"Filtered Rows1"
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,327 @@
+table HEBCI_report
+	lineageTag: 01684ba7-dc5f-4527-a979-f0aa134a2199
+
+	measure Header_school_catmar_years1 = ```
+			
+			VAR SelectedYears = VALUES(HEBCI_report[Year]) // Get a table of the selected years
+			RETURN 
+			    "Income by School and category marker in " & 
+			    CONCATENATEX(SelectedYears, YEAR(HEBCI_report[Year]), ", ")
+			
+			```
+		lineageTag: e3e0503e-bfbf-4c4d-b8a3-cbbd90d46428
+
+	measure Header_year_change1 = ```
+			
+			VAR MinSelectedYear = YEAR(MIN(HEBCI_report[Year]))
+			VAR MaxSelectedYear = YEAR(MAX(HEBCI_report[Year]))
+			RETURN 
+			    "Percent change from " & MinSelectedYear & " to " & MaxSelectedYear
+			
+			```
+		lineageTag: 11052e5f-42eb-4e0e-b342-7ac3baed8b5e
+
+	measure Header_years_income1 = ```
+			
+			VAR SelectedYears = VALUES(HEBCI_report[Year]) // Get a table of the selected years
+			RETURN 
+			    "Income in " & 
+			    CONCATENATEX(SelectedYears, YEAR(HEBCI_report[Year]), ", ")
+			
+			```
+		lineageTag: abb25ae7-d04c-4eb3-9d52-b02adfb732d2
+
+	measure Header_years_projects1 = ```
+			
+			VAR SelectedYears = VALUES(HEBCI_report[Year]) // Get a table of the selected years
+			RETURN 
+			    "Projects in " & 
+			    CONCATENATEX(SelectedYears, YEAR(HEBCI_report[Year]), ", ")
+			
+			```
+		lineageTag: 0f70d661-6042-4697-8924-3cac0ecfabc7
+
+	measure Header_years_school1 = ```
+			
+			VAR SelectedYears = VALUES(HEBCI_report[Year]) // Get a table of the selected years
+			RETURN 
+			    "Income by School in " & 
+			    CONCATENATEX(SelectedYears, YEAR(HEBCI_report[Year]), ", ")
+			
+			```
+		lineageTag: 0dc58ba8-a8ea-4e7e-a36e-0980fddcc628
+
+	measure Percent_change = ```
+			
+			VAR MinSelectedYear = MIN(HEBCI_report[Year]) // Get the earliest year selected by the slicer
+			VAR MaxSelectedYear = MAX(HEBCI_report[Year]) // Get the latest year selected by the slicer
+			VAR MinYearIncome = CALCULATE(SUM(HEBCI_report[Income]), HEBCI_report[Year] = MinSelectedYear) // Income for the earliest selected year
+			VAR MaxYearIncome = CALCULATE(SUM(HEBCI_report[Income]), HEBCI_report[Year] = MaxSelectedYear) // Income for the latest selected year
+			RETURN 
+			    IF(
+			        MinYearIncome = 0,
+			        BLANK(),
+			        (MaxYearIncome - MinYearIncome) / MinYearIncome
+			    )
+			```
+		formatString: 0%;-0%;0%
+		lineageTag: 3d83b2c1-ebbb-4c53-8018-87219073ff3d
+
+	measure Percent_change_planned = ```
+			
+			VAR MinSelectedYear = MIN(HEBCI_report[Year]) // Get the earliest year selected by the slicer
+			VAR MaxSelectedYear = MAX(HEBCI_report[Year]) // Get the latest year selected by the slicer
+			VAR MinYearIncome = CALCULATE(SUM(HEBCI_report[Planned Income]), HEBCI_report[Year] = MinSelectedYear) // Income for the earliest selected year
+			VAR MaxYearIncome = CALCULATE(SUM(HEBCI_report[Planned Income]), HEBCI_report[Year] = MaxSelectedYear) // Income for the latest selected year
+			RETURN 
+			    IF(
+			        MinYearIncome = 0,
+			        BLANK(),
+			        (MaxYearIncome - MinYearIncome) / MinYearIncome
+			    )
+			```
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: 8f898b38-6da4-40b3-a643-6a1e88418c59
+
+	measure Header_main_title_school_data = ```
+			
+			
+			VAR SelectedYears =
+			 VAR YearCount = COUNTROWS(VALUES(HEBCI_projects[Academic Year]))
+			 RETURN
+			    SWITCH(
+			        TRUE(),
+			        YearCount = 1, SELECTEDVALUE(HEBCI_projects[Academic Year]),
+			        YearCount = 2, CONCATENATEX(VALUES(HEBCI_projects[Academic Year]), [Academic Year], ", "),
+			        YearCount > 2, "Multiple Years",
+			        "All Years"
+			    )
+			
+			
+			VAR SelectedCategories =
+			    VAR CategoryCount = COUNTROWS(VALUES(HEBCI_projects[Category Name]))
+			    RETURN 
+			        SWITCH(
+			            TRUE(),
+			            CategoryCount = 1, SELECTEDVALUE(HEBCI_projects[Category Name]), -- If one category is selected, return it
+			            CategoryCount = 2, CONCATENATEX(VALUES(HEBCI_projects[Category Name]), [Category Name], ", "), -- If two, return both
+			            CategoryCount > 2, "Multiple Income Categories", -- If more than two, return this phrase
+			            "All Categories" -- Default when no filter is applied
+			        )
+			
+			RETURN 
+			    "Income Overview & Percentage Change for " & SelectedYears & " | " & SelectedCategories
+			```
+		lineageTag: 0cbda80f-de29-4136-adff-5866cedac58d
+
+	measure Header_main_title = ```
+			
+			
+			VAR SelectedYears =
+			 VAR YearCount = COUNTROWS(VALUES(HEBCI_components[academic year]))
+			 RETURN
+			    SWITCH(
+			        TRUE(),
+			        YearCount = 1, SELECTEDVALUE(HEBCI_components[academic year]),
+			        YearCount = 2, CONCATENATEX(VALUES(HEBCI_components[academic year]), [Academic Year], ", "),
+			        YearCount > 2, "Multiple Years",
+			        "All Years"
+			    )
+			
+			// VAR SelectedCategories =
+			//     VAR CategoryCount = COUNTROWS(VALUES(HEBCI_components[Category Name]))
+			//     RETURN 
+			//         SWITCH(
+			//             TRUE(),
+			//             CategoryCount = 1, SELECTEDVALUE(HEBCI_components[Category Name]), -- If one category is selected, return it
+			//             CategoryCount = 2, CONCATENATEX(VALUES(HEBCI_components[Category Name]), [Category Name], ", "), -- If two, return both
+			//             CategoryCount > 2, "Multiple Income Categories", -- If more than two, return this phrase
+			//             "All Categories" -- Default when no filter is applied
+			//         )
+			
+			RETURN 
+			    "Income Overview for " & SelectedYears 
+			```
+		lineageTag: 491f593b-5a39-479e-918d-8648c6dff78e
+
+	measure Header_main_title2 = ```
+			
+			
+			VAR SelectedYears =
+			 VAR YearCount = COUNTROWS(VALUES(HEBCI_components[academic year]))
+			 RETURN
+			    SWITCH(
+			        TRUE(),
+			        YearCount = 1, SELECTEDVALUE(HEBCI_components[academic year]),
+			        YearCount = 2, CONCATENATEX(VALUES(HEBCI_components[academic year]), [Academic Year], ", "),
+			        YearCount > 2, "Multiple Years",
+			        "All Years"
+			    )
+			
+			
+			RETURN 
+			    "  Actual & Planned Income by KE Perspective & Income Type for " & SelectedYears 
+			```
+		lineageTag: b65b8c9e-7040-4347-9144-e85e35551bb5
+
+	column Category
+		dataType: string
+		lineageTag: 10f0878e-3dc6-4c3c-b4d6-64e96162b8ae
+		summarizeBy: none
+		sourceColumn: Category
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Category Name'
+		dataType: string
+		lineageTag: 8060888c-7790-489a-a60a-f9805db015e6
+		summarizeBy: none
+		sourceColumn: Category Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Parent Element'
+		dataType: string
+		lineageTag: ef601335-109f-4c54-b35e-e2dbc15bf3bf
+		summarizeBy: none
+		sourceColumn: Parent Element
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Category Marker'
+		dataType: string
+		lineageTag: 42a60891-fa03-4a6e-9812-d5e88b4b6397
+		summarizeBy: none
+		sourceColumn: Category Marker
+
+		annotation SummarizationSetBy = Automatic
+
+	column Structure
+		dataType: string
+		lineageTag: 0b9ce47a-668f-4f44-b033-ca854b0b2fff
+		summarizeBy: none
+		sourceColumn: Structure
+
+		annotation SummarizationSetBy = Automatic
+
+	column School
+		dataType: string
+		lineageTag: 5ec4c32d-33f4-446e-8d8f-6ce0b45600f4
+		summarizeBy: none
+		sourceColumn: School
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Activity Code'
+		dataType: string
+		lineageTag: 1b1f15b8-08e7-422f-b2bd-9ef20bf7534d
+		summarizeBy: none
+		sourceColumn: Activity Code
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Activity Description'
+		dataType: string
+		lineageTag: 7d7f0df6-47ab-408a-aa3a-65370eafdcdd
+		summarizeBy: none
+		sourceColumn: Activity Description
+
+		annotation SummarizationSetBy = Automatic
+
+	column Year
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: a3fba4d9-0788-47e8-a36f-86663db02180
+		summarizeBy: none
+		sourceColumn: Year
+
+		variation Variation
+			isDefault
+			relationship: 3040181b-58ce-4599-a923-314cd60bcaa3
+			defaultHierarchy: LocalDateTable_be06ca67-c0d8-4fc8-8dcd-17de121f3ebf.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Academic Year'
+		dataType: string
+		lineageTag: d933eb19-ca3e-4dc9-98c7-990dc0d7cda3
+		summarizeBy: none
+		sourceColumn: Academic Year
+
+		annotation SummarizationSetBy = Automatic
+
+	column Income
+		dataType: double
+		lineageTag: 3888b705-258f-4a92-a2b3-2719f61d7220
+		summarizeBy: sum
+		sourceColumn: Income
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Report Generated'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 5ea4b8e0-07d1-4a14-8c94-b44b2ed044d5
+		summarizeBy: none
+		sourceColumn: Report Generated
+
+		variation Variation
+			isDefault
+			relationship: 280ff6d2-76ec-47e8-bf7b-7c494df542ef
+			defaultHierarchy: LocalDateTable_615f1d63-7ccb-4004-b995-9cfe9e59ba00.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Perspective
+		dataType: string
+		lineageTag: 9534e2fb-da89-408d-a00a-7c5814e6461d
+		summarizeBy: none
+		sourceColumn: Perspective
+
+		annotation SummarizationSetBy = Automatic
+
+	column Metric
+		dataType: string
+		lineageTag: 940a62b5-85aa-43fe-8a35-c96d6b41dda8
+		summarizeBy: none
+		sourceColumn: Metric
+
+		annotation SummarizationSetBy = Automatic
+
+	column Planned_v_actual_nominal = 'HEBCI_report'[Income] - 'HEBCI_report'[Planned Income]
+		lineageTag: ed5267b2-6957-45f1-a9e2-a3a0795b726c
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Planned_v_actual_percent =
+			
+			IF(
+			    'HEBCI_report'[Planned Income] <> 0,
+			    'HEBCI_report'[Income] / 'HEBCI_report'[Planned Income] - 1,
+			    BLANK()   // or some other default value like 0
+			)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 47fdcb38-01f1-481a-879e-2bc0a3de5aba
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition HEBCI_report-99c6cc41-dbf1-4e76-bc6c-cb72b75df8a7 = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(Web.Contents("https://myntuac.sharepoint.com/sites/KEBusinessIntelligence/Shared%20Documents/HEBCIS/HEBCI_clean.xlsx"), null, true),
+				    Table1_Table = Source{[Item="Table1",Kind="Table"]}[Data],
+				    #"Changed Type" = Table.TransformColumnTypes(Table1_Table,{{"Category", type text}, {"Category Name", type text}, {"Parent Element", type text}, {"Category Marker", type text}, {"Structure", type text}, {"School", type text}, {"Activity Code", type text}, {"Activity Description", type text}, {"Year", type datetime}, {"Academic Year", type text}, {"Income", type number}, {"Report Generated", type date}, {"Perspective", type text}, {"Metric", type text}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

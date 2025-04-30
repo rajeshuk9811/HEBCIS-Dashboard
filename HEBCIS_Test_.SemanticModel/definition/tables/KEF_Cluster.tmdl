@@ -1,0 +1,40 @@
+table KEF_Cluster
+	lineageTag: 136167f3-4d18-468b-9ff9-97a5fb9d4568
+
+	column UKPRN
+		dataType: int64
+		formatString: 0
+		lineageTag: 94b9a67b-1dbe-458b-9489-694cbb5d85c2
+		summarizeBy: none
+		sourceColumn: UKPRN
+
+		annotation SummarizationSetBy = Automatic
+
+	column Cluster
+		dataType: string
+		lineageTag: 899c2d8c-f0ff-478d-ade5-fe175baf996b
+		summarizeBy: none
+		sourceColumn: Cluster
+
+		annotation SummarizationSetBy = Automatic
+
+	column HEI
+		dataType: string
+		lineageTag: ec888c01-dd00-4751-94ec-036c76e0fbe6
+		summarizeBy: none
+		sourceColumn: HEI
+
+		annotation SummarizationSetBy = Automatic
+
+	partition KEF_Cluster-3d564624-203a-4235-866d-e2e4179c444a = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(Web.Contents("https://myntuac.sharepoint.com/sites/KEBusinessIntelligence/Shared%20Documents/HEBCIS/HEBCIS%20Data%20for%20PBI.xlsx"), null, true),
+				    KEF_Cluster_Table = Source{[Item="KEF_Cluster",Kind="Table"]}[Data],
+				    #"Changed Type" = Table.TransformColumnTypes(KEF_Cluster_Table,{{"UKPRN", Int64.Type}, {"Cluster", type text}, {"HEI", type text}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

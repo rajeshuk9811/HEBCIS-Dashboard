@@ -1,0 +1,248 @@
+table HEBCI_components
+	lineageTag: fb741cdc-0ace-45a1-a32d-2cdd4a4b3998
+
+	measure Planned = ```
+			
+			CALCULATE(
+			    SUM(HEBCI_components[Planned Income]), 
+			    FILTER(
+			        ALL(HEBCI_components[Academic Year]),
+			        HEBCI_components[Academic Year] IN VALUES(HEBCI_components[Academic Year])
+			    )
+			) + 0
+			
+			```
+		lineageTag: 76f5c403-536c-4d51-b941-faf2be64b30d
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure Actual = ```
+			
+			CALCULATE(
+			    SUM(HEBCI_components[Income]), 
+			    FILTER(
+			        ALL('Calendar'[Academic_Year]),
+			        'Calendar'[Academic_Year] IN VALUES('Calendar'[Academic_Year])
+			    )
+			) + 0
+			```
+		lineageTag: 4dac37c1-91ae-4497-b968-aff8790d7a64
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Actual - Planned' = [Actual] - [Planned]
+		lineageTag: 2cfa3455-24bc-4b3b-9b16-fc07fedd581a
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure Percent_change_projects_Components = ```
+			
+			VAR MinSelectedYear = MIN(HEBCI_components[Year]) // Get the earliest year selected by the slicer
+			VAR MaxSelectedYear = MAX(HEBCI_components[Year]) // Get the latest year selected by the slicer
+			VAR MinYearIncome = CALCULATE(SUM(HEBCI_components[Income]), HEBCI_components[Year] = MinSelectedYear) // Income for the earliest selected year
+			VAR MaxYearIncome = CALCULATE(SUM(HEBCI_components[Income]), HEBCI_components[Year] = MaxSelectedYear) // Income for the latest selected year
+			RETURN 
+			    IF(
+			        MinYearIncome = 0,
+			        BLANK(),
+			        (MaxYearIncome - MinYearIncome) / MinYearIncome
+			    )
+			```
+		lineageTag: 8762e4d9-fe48-46e0-ad84-8fc00bd55802
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Category
+		dataType: string
+		lineageTag: feec1237-7a8d-4c45-a0aa-85579f15a4fe
+		summarizeBy: none
+		sourceColumn: Category
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Category Name'
+		dataType: string
+		lineageTag: e6967ee6-95a9-40ba-ad82-82a39490244b
+		summarizeBy: none
+		sourceColumn: Category Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Parent Element'
+		dataType: string
+		lineageTag: 30a69e2b-545c-46de-b76b-74fc5d0382d7
+		summarizeBy: none
+		sourceColumn: Parent Element
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Category Marker'
+		dataType: string
+		lineageTag: a6ccfb4c-b69c-4d1c-a9a7-6738ede90e6f
+		summarizeBy: none
+		sourceColumn: Category Marker
+
+		annotation SummarizationSetBy = Automatic
+
+	column Structure
+		dataType: string
+		lineageTag: 324bc3d6-559d-4978-9279-ed69b21e7da9
+		summarizeBy: none
+		sourceColumn: Structure
+
+		annotation SummarizationSetBy = Automatic
+
+	column School
+		dataType: string
+		lineageTag: 1c2893dc-e5b9-4489-b452-31a1845374d0
+		summarizeBy: none
+		sourceColumn: School
+
+		annotation SummarizationSetBy = Automatic
+
+	column Year
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 9ce6c15f-2982-4dc7-a1c5-7a7f7795c883
+		summarizeBy: none
+		sourceColumn: Year
+
+		variation Variation
+			isDefault
+			relationship: bd60cb08-4be1-49ad-b9fc-cdb0a0496f10
+			defaultHierarchy: LocalDateTable_8a881db2-14f4-46cf-adbd-0e62af1b2964.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Academic Year'
+		dataType: string
+		lineageTag: 950b9f49-f538-4108-b91d-cdd94493cf8c
+		summarizeBy: none
+		sourceColumn: Academic Year
+
+		annotation SummarizationSetBy = Automatic
+
+	column Income
+		dataType: double
+		lineageTag: 206e3789-7613-4eea-8fa9-27102fe74aa4
+		summarizeBy: sum
+		sourceColumn: Income
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Planned Income'
+		dataType: double
+		lineageTag: f02d8354-82fb-40a2-a855-6907da972da5
+		summarizeBy: sum
+		sourceColumn: Planned Income
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Report Generated'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 7da1cdf3-201c-4dfd-ae31-9880457d6a2b
+		summarizeBy: none
+		sourceColumn: Report Generated
+
+		variation Variation
+			isDefault
+			relationship: 879a1fab-76ce-4aae-af0d-af99c8effe2b
+			defaultHierarchy: LocalDateTable_3c701fc6-9c9c-4e6c-b1e0-78df07c35a73.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Perspective
+		dataType: string
+		lineageTag: 232d72c9-f464-4ef4-a598-a3f993511644
+		summarizeBy: none
+		sourceColumn: Perspective
+
+		annotation SummarizationSetBy = Automatic
+
+	column Metric
+		dataType: string
+		lineageTag: 55bceab9-aa33-471b-b19f-ea5661504919
+		summarizeBy: none
+		sourceColumn: Metric
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Summed Income'
+		dataType: double
+		lineageTag: c99de73f-46a2-451a-ade8-b3b0d3992d0e
+		summarizeBy: sum
+		sourceColumn: Summed Income
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column actual_planned
+		dataType: double
+		lineageTag: 99aea2d9-6da1-4537-81a0-8b54340bef3a
+		summarizeBy: sum
+		sourceColumn: actual_planned
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column actual_planned_overlay
+		dataType: double
+		lineageTag: 5ecb328c-6ffa-43fa-8155-957c287d1d51
+		summarizeBy: sum
+		sourceColumn: actual_planned_overlay
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column actual_less_planned
+		dataType: double
+		lineageTag: b26009cc-25ab-4385-9f1c-c63d8628a944
+		summarizeBy: sum
+		sourceColumn: actual_less_planned
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Unique_ID
+		dataType: string
+		lineageTag: 042cc8fb-ee3e-43a7-9384-c10bb834c861
+		summarizeBy: none
+		sourceColumn: Unique_ID
+
+		annotation SummarizationSetBy = Automatic
+
+	partition HEBCI_components-4912f32c-288f-4fcc-b296-62cd597bebd2 = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(Web.Contents("https://myntuac.sharepoint.com/sites/KEBusinessIntelligence/Shared%20Documents/HEBCIS/HEBCI_clean.xlsx"), null, true),
+				    Table3_Table = Source{[Item="Table3",Kind="Table"]}[Data],
+				    #"Changed Type" = Table.TransformColumnTypes(Table3_Table,{{"Category", type text}, {"Category Name", type text}, {"Parent Element", type text}, {"Category Marker", type text}, {"Structure", type text}, {"School", type text}, {"Year", type datetime}, {"Academic Year", type text}, {"Income", type number}, {"Planned Income", type number}, {"Report Generated", type date}, {"Perspective", type text}, {"Metric", type text}, {"Summed Income", type number}}),
+				    #"Added Custom" = Table.AddColumn(#"Changed Type", "actual_planned", each if Date.Year([Year]) <= Date.Year(Date.AddYears(DateTime.LocalNow(), -1)) then [Summed Income] else [Planned Income]),
+				    #"Changed Type1" = Table.TransformColumnTypes(#"Added Custom",{{"actual_planned", type number}}),
+				    #"Added Custom1" = Table.AddColumn(#"Changed Type1", "actual_planned_overlay", each if Date.Year([Year]) <= Date.Year(Date.AddYears(DateTime.LocalNow(), -1)) then [Summed Income] else null),
+				    #"Changed Type2" = Table.TransformColumnTypes(#"Added Custom1",{{"actual_planned_overlay", type number}}),
+				    #"Added Custom2" = Table.AddColumn(#"Changed Type2", "actual_less_planned", each [Summed Income]-[Planned Income]),
+				    #"Changed Type3" = Table.TransformColumnTypes(#"Added Custom2",{{"actual_less_planned", type number}}),
+				    #"Replaced Value" = Table.ReplaceValue(#"Changed Type3",null,"0",Replacer.ReplaceValue,{"Category Marker"}),
+				    #"Replaced Value1" = Table.ReplaceValue(#"Replaced Value",null,"0",Replacer.ReplaceValue,{"Structure"}),
+				    #"Added Custom3" = Table.AddColumn(#"Replaced Value1", "Unique_ID", each [Academic Year] & "_" & [Category Marker] & "_" & [Category Name] & "_" & [School] & "_" & [Structure] & "_" & [Perspective]),
+				    #"Removed Duplicates" = Table.Distinct(#"Added Custom3", {"Unique_ID"})
+				in
+				    #"Removed Duplicates"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

@@ -1,0 +1,135 @@
+{
+  "version": "1.1.0",
+  "diagrams": [
+    {
+      "ordinal": 0,
+      "scrollPosition": {
+        "x": 14.222222222222221,
+        "y": 347.97037760416669
+      },
+      "nodes": [
+        {
+          "location": {
+            "x": 0,
+            "y": 0
+          },
+          "nodeIndex": "All_data",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 5
+        },
+        {
+          "location": {
+            "x": 15.833333333333371,
+            "y": 502.66666666666669
+          },
+          "nodeIndex": "KEF_Cluster",
+          "size": {
+            "height": 152,
+            "width": 234
+          },
+          "zIndex": 6
+        },
+        {
+          "location": {
+            "x": 696.34444444444421,
+            "y": 890.311111111111
+          },
+          "nodeIndex": "HEBCI_report",
+          "nodeLineageTag": "01684ba7-dc5f-4527-a979-f0aa134a2199",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 8
+        },
+        {
+          "location": {
+            "x": 388.32220052083335,
+            "y": 0
+          },
+          "nodeIndex": "Calendar",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 7
+        },
+        {
+          "location": {
+            "x": 821.3259195963542,
+            "y": 0
+          },
+          "nodeIndex": "HEBCI_totals",
+          "nodeLineageTag": "a169757c-34fa-496f-8e42-d0ab31b22a4e",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 1
+        },
+        {
+          "location": {
+            "x": 616.32222222222208,
+            "y": 403.9111111111111
+          },
+          "nodeIndex": "HEBCI_components",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 2
+        },
+        {
+          "location": {
+            "x": 223.28518880208355,
+            "y": 696.88888888888891
+          },
+          "nodeIndex": "HEBCI_projects",
+          "nodeLineageTag": "bce391e1-2560-4be4-9b7c-6ba9feceb118",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 9
+        },
+        {
+          "location": {
+            "x": 1533.4148084852432,
+            "y": 184.88888888888883
+          },
+          "nodeIndex": "hebci_sector_data_startups",
+          "nodeLineageTag": "bb2c8453-cf24-4e5e-9005-a641aa64b9f5",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 3
+        },
+        {
+          "location": {
+            "x": 993.18518337673618,
+            "y": 426.95555555555552
+          },
+          "nodeIndex": "Description",
+          "nodeLineageTag": "edbcbe30-4537-4731-a89c-8b41ff7cfb8a",
+          "size": {
+            "height": 152,
+            "width": 234
+          },
+          "zIndex": 4
+        }
+      ],
+      "name": "All tables",
+      "zoomValue": 70.3125,
+      "pinKeyFieldsToTop": false,
+      "showExtraHeaderInfo": false,
+      "hideKeyFieldsWhenCollapsed": false,
+      "tablesLocked": false
+    }
+  ],
+  "selectedDiagram": "All tables",
+  "defaultDiagram": "All tables"
+}

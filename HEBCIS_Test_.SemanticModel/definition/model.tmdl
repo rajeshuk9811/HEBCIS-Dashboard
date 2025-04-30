@@ -1,0 +1,39 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-GB
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation PBI_QueryOrder = ["All_data","KEF_Cluster","HEBCI_report","HEBCI_totals","HEBCI_components","HEBCI_projects","hebci_sector_data_startups","Description"]
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBIDesktopVersion = 2.142.928.0 (25.04)+de52df9f0bb74ad93a80d89c52d63fe6d07e0e1b
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table DateTableTemplate_10666c88-5421-47bf-b6ff-80b76c4a3346
+ref table All_data
+ref table KEF_Cluster
+ref table HEBCI_report
+ref table LocalDateTable_615f1d63-7ccb-4004-b995-9cfe9e59ba00
+ref table LocalDateTable_71182d78-761f-4610-a541-bc7033a5cd5e
+ref table Calendar
+ref table LocalDateTable_b10f20a5-fb5b-40e4-a199-4b400dd25f90
+ref table HEBCI_totals
+ref table LocalDateTable_522b8319-7558-4ffd-a35d-cf851dc66e15
+ref table HEBCI_components
+ref table LocalDateTable_3c701fc6-9c9c-4e6c-b1e0-78df07c35a73
+ref table HEBCI_projects
+ref table LocalDateTable_1aa63dc3-a757-4b9e-b205-0dd3dd3818a3
+ref table hebci_sector_data_startups
+ref table LocalDateTable_6d2c1557-7a22-4c32-bbf6-6bf6d9a16069
+ref table Description
+ref table LocalDateTable_8a881db2-14f4-46cf-adbd-0e62af1b2964
+ref table LocalDateTable_0c2494a0-386e-45c2-a316-30be266fab94
+ref table LocalDateTable_be06ca67-c0d8-4fc8-8dcd-17de121f3ebf
+
+ref cultureInfo en-US
+
