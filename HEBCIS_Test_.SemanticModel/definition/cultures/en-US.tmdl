@@ -14297,6 +14297,48 @@ cultureInfo en-US
 			          }
 			        }
 			      ]
+			    },
+			    "hebci_components.percent_change_projects_components": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "HEBCI_components",
+			          "ConceptualProperty": "Percent_change_projects_Components"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "YoY % Change": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "hebci_components.actual__planned": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "HEBCI_components",
+			          "ConceptualProperty": "Actual - Planned"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Actual Minus Planned": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
 			    }
 			  },
 			  "Relationships": {

@@ -118,7 +118,7 @@
     {
       "source": "3dc9272ca4e992500483",
       "target": "0317709186a192a0be8a",
-      "type": "NoFilter"
+      "type": "DataFilter"
     },
     {
       "source": "755fe8561e2cb1d10ec9",

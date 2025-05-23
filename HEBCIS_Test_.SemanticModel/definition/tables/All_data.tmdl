@@ -573,3 +573,5 @@ table All_data
 
 	annotation PBI_ResultType = Table
 
+	annotation PBI_NavigationStepName = Navigation
+
